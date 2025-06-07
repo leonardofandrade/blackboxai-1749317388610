@@ -1,0 +1,52 @@
+{% extends 'billing/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Payments</h2>
+        <a href="{% url 'payment_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Payment
+        </a>
+    </div>
+
+    {% if payments %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Payee</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.payee }}</td>
+                            <td>{{ payment.date }}</td>
+                            <td>${{ payment.amount }}</td>
+                            <td>{{ payment.get_payment_method_display }}</td>
+                            <td>{{ payment.description|truncatewords:10 }}</td>
+                            <td>
+                                <a href="{% url 'payment_update' payment.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'payment_delete' payment.pk %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No payments found. Click "New Payment" to add one.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
