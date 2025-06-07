@@ -1,0 +1,70 @@
+{% extends 'billing/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        {% if form.instance.pk %}
+                            Edit Recurring Billing
+                        {% else %}
+                            New Recurring Billing
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+                                
+                                {% if field.errors %}
+                                    {% if field.name == 'patient' or field.name == 'frequency' %}
+                                        {% render_field field class="form-select is-invalid" %}
+                                    {% else %}
+                                        {% render_field field class="form-control is-invalid" %}
+                                    {% endif %}
+                                    <div class="invalid-feedback">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {% if field.name == 'patient' or field.name == 'frequency' %}
+                                        {% render_field field class="form-select" %}
+                                    {% else %}
+                                        {% render_field field class="form-control" %}
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'recurring_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
